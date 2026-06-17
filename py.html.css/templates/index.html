@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Café Bar</title>
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    </head>
+    <body>
+        <header>
+            <h1>☕ Café Bar</h1>
+            <p>Bienvenido a nuestro menú</p>
+            <button id="btn-tema" onclick="toggleTema()">🌙 Modo oscuro</button>
+        </header>
+    <main>
+    {% for categoria, productos in categorias.items() %}
+    <section>
+        <h2>{{ categoria }}</h2>
+
+        {% for producto in productos %}
+        <div>
+            <span>{{ producto.nombre }}</span>
+            <span>${{ producto.precio }}</span>
+            <button id="btn-{{ producto.nombre }}" onclick="agregar('{{ producto.nombre}}', {{ producto.precio }})">+ Agregar</button>
+        </div>
+
+        {% endfor %}
+
+    </section>
+    {% endfor %}
+
+    <section id="seccion-pedido">
+        <h2>Tu Pedido</h2>
+        <div id="resumen">
+            <p>Todavía no agregaste nada.</p>
+        </div>
+        <button onclick="vaciarPedido()" id="btn-vaciar">🗑 Vaciar pedido</button>
+    </section>
+</main>
+
+        <footer>
+            <p>© Café Bar — Hecho con ☕ y Python</p>
+            <p>IG: <a target="_blank" href="https://www.instagram.com/isma.santillan20/">isma.santillan21</a></p>
+        </footer>
+<script>
+    function toggleTema() {
+        document.body.classList.toggle("oscuro");
+        let btn = document.getElementById("btn-tema");
+        if (document.body.classList.contains("oscuro")) {
+            btn.textContent = "☀️ Modo claro";
+        } else {
+                btn.textContent = "🌙 Modo oscuro";
+        }
+    }
+    
+    
+    let pedido = {};
+    function agregar(nombre, precio) {
+        if (pedido[nombre]) {
+            pedido[nombre].cantidad += 1;
+        }
+        else{
+            pedido[nombre] = {precio: precio, cantidad: 1};
+        }
+        actualizarBoton(nombre);
+        mostrarPedido();
+    }
+
+    function actualizarBoton(nombre){
+        let btn = document.getElementById("btn-" + nombre);
+        let cantidad = pedido[nombre].cantidad;
+        btn.textContent = `+ Agregar (${cantidad})`;
+    }
+    
+    function mostrarPedido(){
+        let resumen = document.getElementById("resumen");
+        let total = 0;
+        let html = "";
+        
+        for (let nombre in pedido) {
+            let item = pedido[nombre];
+            let subtotal = item.precio * item.cantidad;
+            total += subtotal;
+            html += `<p>${item.cantidad}x ${nombre} - $${subtotal}</p>`;
+        }
+        html += `<hr><strong>TOTAL: $${total}</strong>`;
+        resumen.innerHTML = html;
+    }
+
+    function vaciarPedido() {
+        for (let nombre in pedido) {
+            let btn = document.getElementById("btn-" + nombre);
+            if (btn) btn.textContent = "+ Agregar";
+        }
+        pedido = {};
+        document.getElementById("resumen").innerHTML = "<p>Todavía no agregaste nada.</p>"
+    }
+    
+</script>
+    </body>
+</html>
