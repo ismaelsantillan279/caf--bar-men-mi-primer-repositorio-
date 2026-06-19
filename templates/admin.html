@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Panel Admin - Café Bar</title>
+    <style>
+        body { font-family: Georgia, serif; background: #f5f0eb; color: #3b2a1a; padding: 20px; }
+        h1 { color: #3b2a1a; }
+        h2 { color: #7b4f2e; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
+        th { background: #3b2a1a; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #f5f0eb; }
+        input, select { padding: 8px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+        .btn { padding: 8px 14px; border: none; border-radius: 20px; cursor: pointer; font-size: 14px; }
+        .btn-verde { background: #2ecc71; color: white; }
+        .btn-rojo { background: #c0392b; color: white; }
+        .btn-amarillo { background: #f39c12; color: white; }
+        .btn-volver { background: #7b4f2e; color: white; text-decoration: none; padding: 8px 14px; border-radius: 20px; font-size: 14px; }
+        .form-agregar { background: white; padding: 20px; border-radius: 12px; margin-bottom: 25px; border-left: 5px solid #7b4f2e; }
+        .form-agregar input, .form-agregar select { margin-right: 10px; margin-top: 8px; }
+    </style>
+</head>
+<body>
+    <a href="/" class="btn-volver">← Volver al menú</a>
+    <h1>⚙️ Panel de Administración</h1>
+
+    <!-- FORMULARIO PARA AGREGAR PRODUCTO -->
+    <div class="form-agregar">
+        <h2>Agregar producto</h2>
+        <form action="/admin/agregar" method="POST">
+            <input type="text" name="nombre" placeholder="Nombre" required>
+            <input type="number" name="precio" placeholder="Precio" required>
+            <select name="categoria">
+                <option>Bebidas Calientes</option>
+                <option>Bebidas Frías</option>
+                <option>Comidas</option>
+                <option>Postres</option>
+            </select>
+            <button type="submit" class="btn btn-verde">+ Agregar</button>
+        </form>
+    </div>
+
+    <!-- TABLA DE PRODUCTOS -->
+    <h2>Productos actuales</h2>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>Precio</th>
+            <th>Categoría</th>
+            <th>Acciones</th>
+        </tr>
+        {% for producto in productos %}
+        <tr>
+            <td>{{ producto[0] }}</td>
+            <td>{{ producto[1] }}</td>
+            <td>${{ producto[2] }}</td>
+            <td>{{ producto[3] }}</td>
+            <td>
+                <a href="/admin/editar/{{ producto[0] }}" class="btn btn-amarillo">✏️ Editar</a>
+                <a href="/admin/borrar/{{ producto[0] }}" class="btn btn-rojo" onclick="return confirm('¿Seguro que querés borrar este producto?')">🗑 Borrar</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+</body>
+</html>

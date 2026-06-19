@@ -47,5 +47,39 @@ def obtener_productos():
     productos = cursor.fetchall()
     con.close()
     return productos
+
+def agregar_producto(nombre, precio, categoria):
+    con = conectar()
+    cursor = con.cursor()
+    cursor.execute(
+        "INSERT INTO productos (nombre, precio, categoria) VALUES  (%s, %s, %s)", (nombre, precio, categoria)
+    )
+    con.commit()
+    con.close()
+
+def editar_producto(id, nombre, precio, categoria):
+    con = conectar()
+    cursor = con.cursor()
+    cursor.execute(
+        "UPDATE productos SET nombre=%s, precio=%s, categoria=%s  WHERE id=%s", (nombre, precio, categoria, id)
+    )
+    con.commit()
+    con.close()
+
+def borrar_producto(id):
+    con = conectar()
+    cursor = con.cursor()
+    cursor.execute("DELETE FROM productos WHERE id=%s", (id,))
+    con.commit()
+    con.close()
+
+def obtener_producto_por_id(id):
+    con = conectar()
+    cursor = con.cursor()
+    cursor.execute("SELECT id, nombre, precio, categoria FROM productos WHERE id=%s", (id,))
+    producto = cursor.fetchone()
+    con.close()
+    return producto
+
 crear_tabla()
 insertar_productos_iniciales()
