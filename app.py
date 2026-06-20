@@ -1,7 +1,23 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import database
 
 app = Flask(__name__)
+app.secret_key = "cafebar2024"
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        if request.form["password"] == "admin123":
+            session["admin"] = True
+            return redirect(url_for("admin"))
+        else:
+            return render_template("login.html", error="Contraseña incorrecta")
+    return render_template("login.html", error=None)
+
+@app.route("/logout")
+def logout():
+    session.pop("admin", None)
+    return redirect(url_for("login"))
 
 @app.route("/")
 def index():
@@ -15,6 +31,8 @@ def index():
 
 @app.route("/admin")
 def admin():
+    if not session.get("admin"):
+        return redirect(url_for("login"))
     con = database.conectar()
     cursor = con.cursor()
     cursor.execute("SELECT id, nombre, precio, categoria FROM productos ORDER BY categoria")
@@ -24,6 +42,8 @@ def admin():
 
 @app.route("/admin/agregar", methods=["POST"])
 def agregar():
+    if not session.get("admin"):
+        return redirect(url_for("login"))
     nombre = request.form["nombre"]
     precio = int(request.form["precio"])
     categoria = request.form["categoria"]
@@ -32,6 +52,8 @@ def agregar():
 
 @app.route("/admin/editar/<int:id>", methods=["GET", "POST"])
 def editar(id):
+    if not session.get("admin"):
+        return redirect(url_for("login"))
     if request.method == "POST":
         nombre = request.form["nombre"]
         precio = int(request.form["precio"])
@@ -43,6 +65,8 @@ def editar(id):
 
 @app.route("/admin/borrar/<int:id>")
 def borrar(id):
+    if not session.get("admin"):
+        return redirect(url_for("login"))
     database.borrar_producto(id)
     return redirect(url_for("admin"))
 
