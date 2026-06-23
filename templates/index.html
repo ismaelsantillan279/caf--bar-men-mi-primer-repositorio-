@@ -33,7 +33,16 @@
         <div id="resumen">
             <p>Todavía no agregaste nada.</p>
         </div>
-        <button onclick="vaciarPedido()" id="btn-vaciar">🗑 Vaciar pedido</button>
+        <form id="form-pedido" action="/confirmar" method="POST">
+            <input type="hidden" id="input-mesa" name="mesa" value="">
+            <input type="hidden" id="input-productos" name="productos" value="">
+            <input type="hidden" id="input-total" name="total" value="">
+
+            <input type="number" id="numero-mesa" placeholder="Número de mesa" min="1" style="margin-top: 15; width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-size:15px; box-sizing:border-box;">
+
+            <button type="button" onclick="confirmarPedido()" id="btn-confirmar">✅ Confirmar pedido</button>
+            <button onclick="vaciarPedido()" id="btn-vaciar">🗑 Vaciar pedido</button>
+        </form>
     </section>
 </main>
 
@@ -85,6 +94,33 @@
         html += `<hr><strong>TOTAL: $${total}</strong>`;
         resumen.innerHTML = html;
     }
+    
+    function confirmarPedido() {
+        if(Object.keys(pedido).length === 0) {
+            alert("No hay productos en el pedido.");
+            return;
+        }
+        let mesa = document.getElementById("numero-mesa").value;
+        if (!mesa) {
+            alert("Por favor ingresá el número de mesa.");
+            return;
+        }
+        let productosTexto = "";
+        let total = 0;
+        for (let nombre in pedido) {
+            let item = pedido[nombre];
+            let subtotal = item.precio * item.cantidad;
+            productosTexto += `${item.cantidad}x ${nombre} $${subtotal} | `;
+            total += subtotal;
+        }
+
+        document.getElementById("input-mesa").value = mesa;
+        document.getElementById("input-productos").value = productosTexto;
+        document.getElementById("input-total").value = total;
+
+        document.getElementById("form-pedido").submit();
+    
+    } 
 
     function vaciarPedido() {
         for (let nombre in pedido) {

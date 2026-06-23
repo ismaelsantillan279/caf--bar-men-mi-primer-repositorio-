@@ -29,6 +29,29 @@ def index():
         categorias[categoria].append({"nombre": nombre, "precio": precio})
     return render_template("index.html", categorias=categorias)
 
+@app.route("/confirmar", methods=["POST"])
+def confirmar():
+    print("LLEGÓ A CONFIRMAR")
+    mesa = request.form.get("mesa", "0")
+    productos = request.form.get("productos")
+    total = int(request.form.get("total"))
+    database.guardar_pedido(mesa, productos, total)
+    return render_template("factura.html", mesa=mesa, productos=productos, total=total)
+
+@app.route("/admin/pedidos")
+def pedidos():
+    if not session.get("admin"):
+        return redirect(url_for("login"))
+    pedidos = database.obtener_pedidos()
+    return render_template("pedidos.html", pedidos=pedidos)
+
+@app.route("/admin/pedidos/entregar/<int:id>")
+def entregar(id):
+    if not session.get("admin"):
+        return redirect(url_for("login"))
+    database.marcar_entregado(id)
+    return redirect(url_for("pedidos"))
+
 @app.route("/admin")
 def admin():
     if not session.get("admin"):

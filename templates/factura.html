@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Factura - Café Bar</title>
+    <style>
+        body { font-family: Georgia, serif; background: #f5f0eb; color: #3b2a1a; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .factura { background: white; padding: 40px; border-radius: 12px; max-width: 400px; width: 100%; box-shadow: 0 4px 15px rgba(0,0,0,0.1); border-left: 5px solid #7b4f2e; }
+        h1 { text-align: center; margin-bottom: 5px; }
+        .mesa { text-align: center; font-size: 18px; color: #7b4f2e; margin-bottom: 20px; }
+        .separador { border: none; border-top: 1px dashed #ccc; margin: 15px 0; }
+        .producto { display: flex; justify-content: space-between; padding: 5px 0; }
+        .total { display: flex; justify-content: space-between; font-weight: bold; font-size: 18px; margin-top: 10px; }
+        .btn-volver { display: block; text-align: center; margin-top: 20px; padding: 10px; background: #7b4f2e; color: white; text-decoration: none; border-radius: 20px; }
+        .btn-volver:hover { background: #3b2a1a; }
+        .gracias { text-align: center; color: #7b4f2e; margin-top: 15px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="factura">
+        <h1>☕ Bar VIZZO</h1>
+        <p class="mesa">Mesa N° {{ mesa }}</p>
+        <hr class="separador">
+
+        {% for item in productos.split(" | ") %}
+            {% if item.strip() %}
+            <div class="producto">
+                <span>{{ item.strip() }}</span>
+            </div>
+            {% endif %}
+        {% endfor %}
+
+        <hr class="separador">
+        <div class="total">
+            <span>TOTAL</span>
+            <span>${{ total }}</span>
+        </div>
+        <p class="gracias">¡Gracias por su visita! 🙏</p>
+        <a href="/" class="btn-volver">← Volver al menú</a>
+    </div>
+</body>
+</html>

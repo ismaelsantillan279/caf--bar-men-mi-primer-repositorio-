@@ -81,5 +81,45 @@ def obtener_producto_por_id(id):
     con.close()
     return producto
 
+def crear_tabla_pedidos():
+    con = conectar()
+    cursor = con.cursor()
+    cursor.execute("""
+                   CREATE TABLE IF NOT EXISTS pedidos (
+                   id SERIAL PRIMARY KEY,
+                   mesa INTEGER NOT NULL,
+                   productos TEXT NOT NULL,
+                   total INTEGER NOT NULL,
+                   estado TEXT DEFAULT 'pendiente',
+                   fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                   )""")
+    con.commit()
+    con.close()
+
+def guardar_pedido(mesa, productos, total):
+    con = conectar()
+    cursor = con.cursor()
+    cursor.execute(
+        "INSERT INTO pedidos (mesa, productos, total) VALUES (%s, %s, %s)", (mesa, productos, total)
+    )
+    con.commit()
+    con.close()
+
+def obtener_pedidos():
+    con = conectar()
+    cursor = con.cursor()
+    cursor.execute("SELECT id, mesa, productos, total, estado, fecha FROM pedidos WHERE estado='pendiente' ORDER BY fecha")
+    pedidos = cursor.fetchall()
+    con.close()
+    return pedidos
+
+def marcar_entregado(id):
+    con = conectar()
+    cursor = con.cursor()
+    cursor.execute("UPDATE pedidos SET estado='entregado' WHERE id=%s", (id,))
+    con.commit()
+    con.close()
+    
 crear_tabla()
 insertar_productos_iniciales()
+crear_tabla_pedidos()
