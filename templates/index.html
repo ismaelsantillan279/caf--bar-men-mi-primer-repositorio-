@@ -38,7 +38,8 @@
             <input type="hidden" id="input-productos" name="productos" value="">
             <input type="hidden" id="input-total" name="total" value="">
 
-            <input type="number" id="numero-mesa" placeholder="Número de mesa" min="1" style="margin-top: 15; width:100%; padding:10px; border:1px solid #ccc; border-radius:6px; font-size:15px; box-sizing:border-box;">
+            <input type="hidden" id="numero-mesa" value="">
+            <p id="texto-mesa" style="font-size:16px; color:#7b4f2e; font-weight:bold; margin-top:15px;"></p>
 
             <button type="button" onclick="confirmarPedido()" id="btn-confirmar">✅ Confirmar pedido</button>
             <button onclick="vaciarPedido()" id="btn-vaciar">🗑 Vaciar pedido</button>
@@ -61,8 +62,15 @@
         }
     }
     
-    
     let pedido = {};
+    const urlParams = new URLSearchParams(window.location.search);
+    const mesaURL = urlParams.get("mesa");
+    if (mesaURL) {
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("numero-mesa").value = mesaURL;
+        document.getElementById("texto-mesa").textContent = "Mesa N° " + mesaURL;
+    });
+    }
     function agregar(nombre, precio) {
         if (pedido[nombre]) {
             pedido[nombre].cantidad += 1;
