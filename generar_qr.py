@@ -8,4 +8,9 @@ for mesa in range(1, CANT_MESAS + 1):
     qr.save(f"qr_mesas/mesa_{mesa}.png")
     print(f"QR mesa {mesa} generado!")
 
+# QR para el admin
+qr_admin = qrcode.make("https://cafe-bar-menu.onrender.com/login")
+qr_admin.save("qr_mesas/admin_login.png")
+print("QR admin generado!")
+
 print("¡Todos los QR generados en la carpeta qr_mesas!")
