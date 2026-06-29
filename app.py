@@ -7,13 +7,36 @@ app.secret_key = "cafebar2024"
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
-        if request.form["password"] == "admin123":
-            session["admin"] = True
-            return redirect(url_for("admin"))
-        else:
-            return render_template("login.html", error="Contraseña incorrecta")
+            password_actual = database.obtener_password()
+            if request.form["password"] == password_actual:
+                session["admin"] = True
+                return redirect(url_for("admin"))
+            else:
+                return render_template("login.html", error="Contraseña incorrecta")
     return render_template("login.html", error=None)
 
+@app.route("/admin/cambiar-password", methods=["GET", "POST"])
+def cambiar_password():
+    if not session.get("admin"):
+        return redirect(url_for("login"))
+    if request.method == "POST":
+        password_actual = database.obtener_password()
+        actual = request.form["actual"]
+        nueva = request.form["nueva"]
+        repetir = request.form["repetir"]
+
+        if actual != password_actual:
+            return render_template("cambiar_password.html", error="La contraseña actual es incorrecta")
+        if nueva != repetir:
+            return render_template("cambiar_password.html", error="Las contraseñas nuevas no coinciden")
+        if len(nueva) < 6:
+            return render_template("cambiar_password.html", error="La contraseña debe tener al menos 6 caracteres")
+        
+        database.cambiar_password(nueva)
+        return render_template("cambiar_password.html", exito="¡Contraseña cambiada correctamente!")
+    
+    return render_template("cambiar_password.html", error=None)
+ 
 @app.route("/logout")
 def logout():
     session.pop("admin", None)

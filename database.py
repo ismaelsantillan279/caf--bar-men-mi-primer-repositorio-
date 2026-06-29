@@ -132,7 +132,39 @@ def marcar_entregado(id):
     cursor.execute("UPDATE pedidos SET estado='entregado' WHERE id=%s", (id,))
     con.commit()
     con.close()
-    
+
+def cambiar_password(nueva_password):
+    con = conectar()
+    cursor = con.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS configuracion (
+            clave TEXT PRIMARY KEY,
+            valor TEXT NOT NULL
+        )
+    """)
+    cursor.execute("""
+        INSERT INTO configuracion (clave, valor) VALUES ('password', %s)
+        ON CONFLICT (clave) DO UPDATE SET valor = %s
+    """, (nueva_password, nueva_password))
+    con.commit()
+    con.close()
+
+def obtener_password():
+    con = conectar()
+    cursor = con.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS configuracion (
+            clave TEXT PRIMARY KEY,
+            valor TEXT NOT NULL
+        )
+    """)
+    cursor.execute("SELECT valor FROM configuracion WHERE clave='password'")
+    resultado = cursor.fetchone()
+    con.close()
+    if resultado:
+        return resultado[0]
+    return "admin123"
+
 crear_tabla()
 insertar_productos_iniciales()
 crear_tabla_pedidos()
