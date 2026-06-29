@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Historial - Admin</title>
+    <style>
+        body { font-family: Georgia, serif; background: #f5f0eb; color: #3b2a1a; padding: 20px; }
+        h1 { color: #3b2a1a; }
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 10px; overflow: hidden; }
+        th { background: #3b2a1a; color: white; padding: 12px; text-align: left; }
+        td { padding: 12px; border-bottom: 1px solid #f5f0eb; }
+        .btn-volver { background: #7b4f2e; color: white; text-decoration: none; padding: 8px 14px; border-radius: 20px; font-size: 14px; }
+        .pendiente { color: #e67e22; font-weight: bold; }
+        .entregado { color: #2ecc71; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <a href="/admin" class="btn-volver">← Volver al admin</a>
+    <h1>📋 Historial del día</h1>
+
+    {% if pedidos %}
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Mesa</th>
+            <th>Productos</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Hora</th>
+        </tr>
+        {% for pedido in pedidos %}
+        <tr>
+            <td>{{ pedido[0] }}</td>
+            <td>Mesa {{ pedido[1] }}</td>
+            <td>{{ pedido[2] }}</td>
+            <td>${{ pedido[3] }}</td>
+            <td class="{{ pedido[4] }}">{{ pedido[4] }}</td>
+            <td>{{ pedido[5] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No hay pedidos hoy.</p>
+    {% endif %}
+
+</body>
+</html>

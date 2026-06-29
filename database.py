@@ -113,6 +113,19 @@ def obtener_pedidos():
     con.close()
     return pedidos
 
+def obtener_historial():
+    con = conectar()
+    cursor = con.cursor()
+    cursor.execute("""
+        SELECT id, mesa, productos, total, estado, fecha 
+        FROM pedidos 
+        WHERE fecha::date = CURRENT_DATE
+        ORDER BY fecha DESC
+    """)
+    pedidos = cursor.fetchall()
+    con.close()
+    return pedidos
+
 def marcar_entregado(id):
     con = conectar()
     cursor = con.cursor()

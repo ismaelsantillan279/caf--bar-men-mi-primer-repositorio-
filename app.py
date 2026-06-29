@@ -52,6 +52,13 @@ def entregar(id):
     database.marcar_entregado(id)
     return redirect(url_for("pedidos"))
 
+@app.route("/admin/historial")
+def historial():
+    if not session.get("admin"):
+        return redirect(url_for("login"))
+    pedidos = database.obtener_historial()
+    return render_template("historial.html", pedidos=pedidos)
+
 @app.route("/admin")
 def admin():
     if not session.get("admin"):
