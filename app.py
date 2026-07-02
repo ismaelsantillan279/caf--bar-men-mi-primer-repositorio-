@@ -120,9 +120,18 @@ def editar(id):
         return redirect(url_for("login"))
     if request.method == "POST":
         nombre = request.form["nombre"]
-        precio = int(request.form["precio"])
+        precio = int(request.form["precio"].replace(".", ""))
         categoria = request.form["categoria"]
-        database.editar_producto(id, nombre, precio, categoria)
+        
+        imagen_archivo = request.files.get("imagen")
+        nombre_imagen = None
+        
+        if imagen_archivo and imagen_archivo.filename != "":
+            nombre_imagen = imagen_archivo.filename
+            ruta = os.path.join("static", "imagenes", nombre_imagen)
+            imagen_archivo.save(ruta)
+        
+        database.editar_producto(id, nombre, precio, categoria, nombre_imagen)
         return redirect(url_for("admin"))
     producto = database.obtener_producto_por_id(id)
     return render_template("editar.html", producto=producto)

@@ -58,12 +58,19 @@ def agregar_producto(nombre, precio, categoria, imagen=None):
     con.commit()
     con.close()
 
-def editar_producto(id, nombre, precio, categoria):
+def editar_producto(id, nombre, precio, categoria, imagen=None):
     con = conectar()
     cursor = con.cursor()
-    cursor.execute(
-        "UPDATE productos SET nombre=%s, precio=%s, categoria=%s  WHERE id=%s", (nombre, precio, categoria, id)
-    )
+    if imagen:
+        cursor.execute(
+            "UPDATE productos SET nombre=%s, precio=%s, categoria=%s, imagen=%s WHERE id=%s",
+            (nombre, precio, categoria, imagen, id)
+        )
+    else:
+        cursor.execute(
+            "UPDATE productos SET nombre=%s, precio=%s, categoria=%s WHERE id=%s",
+            (nombre, precio, categoria, id)
+        )
     con.commit()
     con.close()
 

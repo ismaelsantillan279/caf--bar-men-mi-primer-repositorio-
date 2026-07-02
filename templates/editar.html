@@ -18,24 +18,34 @@
     <h1>✏️ Editar Producto</h1>
 
     <div class="form-editar">
-        <form action="/admin/editar/{{ producto[0] }}" method="POST">
-            
-            <label>Nombre</label>
-            <input type="text" name="nombre" value="{{ producto[1] }}" required>
-            
-            <label>Precio</label>
-            <input type="number" name="precio" value="{{ producto[2] }}" required>
-            
-            <label>Categoría</label>
-            <select name="categoria">
-                <option {% if producto[3] == "Bebidas Calientes" %}selected{% endif %}>Bebidas Calientes</option>
-                <option {% if producto[3] == "Bebidas Frías" %}selected{% endif %}>Bebidas Frías</option>
-                <option {% if producto[3] == "Comidas" %}selected{% endif %}>Comidas</option>
-                <option {% if producto[3] == "Postres" %}selected{% endif %}>Postres</option>
-            </select>
+<form action="/admin/editar/{{ producto[0] }}" method="POST" enctype="multipart/form-data">
+    
+    <label>Nombre</label>
+    <input type="text" name="nombre" value="{{ producto[1] }}" required>
+    
+    <label>Precio</label>
+    <input type="number" name="precio" value="{{ producto[2] }}" required>
+    
+    <label>Categoría</label>
+    <select name="categoria">
+        <option {% if producto[3] == "Bebidas Calientes" %}selected{% endif %}>Bebidas Calientes</option>
+        <option {% if producto[3] == "Bebidas Frías" %}selected{% endif %}>Bebidas Frías</option>
+        <option {% if producto[3] == "Comidas" %}selected{% endif %}>Comidas</option>
+        <option {% if producto[3] == "Postres" %}selected{% endif %}>Postres</option>
+    </select>
 
-            <button type="submit" class="btn btn-verde">💾 Guardar cambios</button>
-        </form>
+    <label>Imagen actual</label>
+    {% if producto[4] %}
+    <img src="/static/imagenes/{{ producto[4] }}" style="width:80px; height:80px; object-fit:cover; border-radius:8px; display:block; margin-bottom:10px;">
+    {% else %}
+    <p style="color:#999; font-size:13px;">Sin imagen</p>
+    {% endif %}
+
+    <label>Nueva imagen</label>
+    <input type="file" name="imagen" accept="image/*">
+
+    <button type="submit" class="btn btn-verde">💾 Guardar cambios</button>
+</form>
     </div>
 
 </body>
