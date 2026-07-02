@@ -43,16 +43,17 @@ def insertar_productos_iniciales():
 def obtener_productos():
     con = conectar()
     cursor = con.cursor()
-    cursor.execute("SELECT nombre, precio, categoria FROM productos ORDER BY categoria")
+    cursor.execute("SELECT nombre, precio, categoria, imagen FROM productos ORDER BY categoria")
     productos = cursor.fetchall()
     con.close()
     return productos
 
-def agregar_producto(nombre, precio, categoria):
+def agregar_producto(nombre, precio, categoria, imagen=None):
     con = conectar()
     cursor = con.cursor()
     cursor.execute(
-        "INSERT INTO productos (nombre, precio, categoria) VALUES  (%s, %s, %s)", (nombre, precio, categoria)
+        "INSERT INTO productos (nombre, precio, categoria, imagen) VALUES  (%s, %s, %s, %s)"
+        , (nombre, precio, categoria, imagen)
     )
     con.commit()
     con.close()
@@ -76,7 +77,7 @@ def borrar_producto(id):
 def obtener_producto_por_id(id):
     con = conectar()
     cursor = con.cursor()
-    cursor.execute("SELECT id, nombre, precio, categoria FROM productos WHERE id=%s", (id,))
+    cursor.execute("SELECT id, nombre, precio, categoria, imagen FROM productos WHERE id=%s", (id,))
     producto = cursor.fetchone()
     con.close()
     return producto
@@ -126,6 +127,16 @@ def obtener_historial():
     con.close()
     return pedidos
 
+def agregar_columna_imagen():
+    con = conectar()
+    cursor = con.cursor()
+    cursor.execute("""
+        ALTER TABLE productos 
+        ADD COLUMN IF NOT EXISTS imagen TEXT DEFAULT NULL
+    """)
+    con.commit()
+    con.close()
+
 def marcar_entregado(id):
     con = conectar()
     cursor = con.cursor()
@@ -168,3 +179,4 @@ def obtener_password():
 crear_tabla()
 insertar_productos_iniciales()
 crear_tabla_pedidos()
+agregar_columna_imagen()

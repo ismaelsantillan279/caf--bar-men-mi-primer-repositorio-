@@ -18,11 +18,14 @@
         <h2>{{ categoria }}</h2>
         {% for producto in productos %}
         <div>
+            {% if producto.imagen %}
+            <img src="/static/imagenes/{{ producto.imagen }}" alt="{{ producto.nombre }}" style="width:60px; heigth:60px; object-fit:cover; border-radius: 8px; margin-right:10px">
+            {% endif %}
             <span>{{ producto.nombre }}</span>
             <span>${{ producto.precio }}</span>
             <button id="btn-{{ producto.nombre }}" onclick="agregar('{{ producto.nombre}}', {{ producto.precio }})">+ Agregar</button>
         </div>
-
+        
         {% endfor %}
 
     </section>

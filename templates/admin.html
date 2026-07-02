@@ -31,7 +31,7 @@
     <!-- FORMULARIO PARA AGREGAR PRODUCTO -->
     <div class="form-agregar">
         <h2>Agregar producto</h2>
-        <form action="/admin/agregar" method="POST">
+        <form action="/admin/agregar" method="POST" enctype="multipart/form-data">
             <input type="text" name="nombre" placeholder="Nombre" required>
             <input type="number" name="precio" placeholder="Precio" required>
             <select name="categoria">
@@ -40,6 +40,7 @@
                 <option>Comidas</option>
                 <option>Postres</option>
             </select>
+            <input type="file" name="imagen" accept="image/*">
             <button type="submit" class="btn btn-verde">+ Agregar</button>
         </form>
     </div>

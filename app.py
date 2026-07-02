@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+import os
 import database
 
 app = Flask(__name__)
@@ -46,10 +47,10 @@ def logout():
 def index():
     productos_db = database.obtener_productos()
     categorias = {}
-    for nombre, precio, categoria in productos_db:
+    for nombre, precio, categoria, imagen in productos_db:
         if categoria not in categorias:
             categorias[categoria] = []
-        categorias[categoria].append({"nombre": nombre, "precio": precio})
+        categorias[categoria].append({"nombre": nombre, "precio": precio, "imagen": imagen})
     return render_template("index.html", categorias=categorias)
 
 @app.route("/confirmar", methods=["POST"])
@@ -97,10 +98,20 @@ def admin():
 def agregar():
     if not session.get("admin"):
         return redirect(url_for("login"))
+    
     nombre = request.form["nombre"]
     precio = int(request.form["precio"])
     categoria = request.form["categoria"]
-    database.agregar_producto(nombre, precio, categoria)
+
+    imagen_archivo = request.files.get("imagen")
+    nombre_imagen = None
+
+    if imagen_archivo and imagen_archivo.filename != "":
+        nombre_imagen = imagen_archivo.filename
+        ruta = os.path.join("static", "imagenes", nombre_imagen)
+        imagen_archivo.save(ruta)
+
+    database.agregar_producto(nombre, precio, categoria, nombre_imagen)
     return redirect(url_for("admin"))
 
 @app.route("/admin/editar/<int:id>", methods=["GET", "POST"])
